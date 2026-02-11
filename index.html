@@ -57,7 +57,7 @@ font-weight:600;
 <main class="convite-main">
 <div class="convite-stage">
 
-<video id="video" playsinline muted preload="metadata">
+<video id="video" playsinline preload="metadata">
 <source src="video.mp4" type="video/mp4">
 </video>
 
@@ -87,10 +87,10 @@ const capa=document.getElementById("capa")
 const video=document.getElementById("video")
 const musica=document.getElementById("musica")
 
-let abaixou=false
+let cortou=false
 let voltou=false
 
-function fadeVolume(audio, alvo, duracao=800){
+function fadeVolume(audio, alvo, duracao=600){
 const passo=(alvo-audio.volume)/(duracao/50)
 const intervalo=setInterval(()=>{
 audio.volume+=passo
@@ -116,17 +116,19 @@ if(v>=0.8)clearInterval(fade)
 }
 
 video.addEventListener("play",()=>{
-abaixou=false
+cortou=false
 voltou=false
 })
 
 video.addEventListener("timeupdate",()=>{
 
-if(video.currentTime>=4 && !abaixou){
-fadeVolume(musica,0.15)
-abaixou=true
+// 🎤 Sonic falando 4s → corta música
+if(video.currentTime>=4 && !cortou){
+fadeVolume(musica,0)
+cortou=true
 }
 
+// 🎉 terminou fala 17s → volta música
 if(video.currentTime>=17 && !voltou){
 fadeVolume(musica,0.8)
 voltou=true
