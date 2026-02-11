@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -88,11 +87,26 @@ const capa=document.getElementById("capa")
 const video=document.getElementById("video")
 const musica=document.getElementById("musica")
 
+let abaixou=false
+let voltou=false
+
+function fadeVolume(audio, alvo, duracao=800){
+const passo=(alvo-audio.volume)/(duracao/50)
+const intervalo=setInterval(()=>{
+audio.volume+=passo
+if((passo>0 && audio.volume>=alvo)||(passo<0 && audio.volume<=alvo)){
+audio.volume=alvo
+clearInterval(intervalo)
+}
+},50)
+}
+
 abrir.onclick=()=>{
 capa.style.display="none"
 video.play()
 musica.volume=0
 musica.play()
+
 let v=0
 const fade=setInterval(()=>{
 v+=0.05
@@ -100,6 +114,25 @@ musica.volume=v
 if(v>=0.8)clearInterval(fade)
 },180)
 }
+
+video.addEventListener("play",()=>{
+abaixou=false
+voltou=false
+})
+
+video.addEventListener("timeupdate",()=>{
+
+if(video.currentTime>=4 && !abaixou){
+fadeVolume(musica,0.15)
+abaixou=true
+}
+
+if(video.currentTime>=17 && !voltou){
+fadeVolume(musica,0.8)
+voltou=true
+}
+
+})
 
 const open=id=>{
 document.querySelector(id).style.display="flex"
